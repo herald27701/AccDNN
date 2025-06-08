@@ -70,7 +70,7 @@ def uint16_dump_hex_aligned(file_path_name, mat):
 
 def mat_dump_float(file_path_name, mat, dw, dq):
     if mat.ndim != 1:
-        print "Input mat dimension is not 1, will reshape to 1."
+        print("Input mat dimension is not 1, will reshape to 1.")
         mat = mat.reshape(-1)
     #scale the data to .DQ
     mat = mat * (2 ** dq)
@@ -85,7 +85,7 @@ def mat_dump_float(file_path_name, mat, dw, dq):
 
 def mat_dump_int(file_path_name, mat, dw, dq):
     if mat.ndim != 1:
-        print "Input mat dimension is not 1, will reshape to 1."
+        print("Input mat dimension is not 1, will reshape to 1.")
         mat = mat.reshape(-1)
     mat = _quantize(mat, dw, dq, False)
     

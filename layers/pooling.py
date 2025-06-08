@@ -75,7 +75,7 @@ class Pooling(Layer):
         cycle_per_dout = self.kernel_size * self.kernel_size
 
         if cycle_per_dout <= access_operator_delay:
-            print '%s: Too higher CPF, will insert a fifo before layer output.'%self.layer_name
+            print('%s: Too higher CPF, will insert a fifo before layer output.'%self.layer_name)
             self.insert_fifo = True
             self.fifo_depth = int(math.ceil(float(access_operator_delay + 1) / float(cycle_per_dout)))
 

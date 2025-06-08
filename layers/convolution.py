@@ -5,7 +5,8 @@ import math
 from util.math2 import is_power
 from util.resource import get_brams
 from settings import *
-import ConfigParser
+#import ConfigParser
+import configparser as ConfigParser
 import numpy as np
 
 class Convolution(Layer):
@@ -65,7 +66,7 @@ class Convolution(Layer):
             self.dsp_split = True
             # kpf should be even whe dsp_split is true
             self.kpf = max(2, self.kpf) 
-            print '%s:The dsp will be splited for two channels.'%(self.layer_name)
+            print('%s:The dsp will be splited for two channels.'%(self.layer_name))
             #if self.kpf % 2 != 0:
             #    raise Exception('%s:KPF should be even when dsp is splited.'%(self.layer_name))
 
@@ -146,7 +147,7 @@ class Convolution(Layer):
         cycle_per_dout = self.kernel_shape[0] * self.kernel_shape[1] * self.kernel_shape[2] / self.cpf
        
         if cycle_per_dout <= access_operator_delay:
-            print '%s: Too higher CPF, will insert a fifo before layer output.'%self.layer_name
+            print('%s: Too higher CPF, will insert a fifo before layer output.'%self.layer_name)
             self.insert_fifo = True
             self.fifo_depth = int(math.ceil(float(access_operator_delay + 1) / float(cycle_per_dout)))
 
@@ -178,15 +179,15 @@ class Convolution(Layer):
 
         # compute batch normalization parameters
         if self.bn:
-            print self.bn[1]
+            print(self.bn[1])
             bn_scale = self.bn[2] / np.sqrt(self.bn[1] + 1e-10)
             bn_bias = self.bn[3] - self.bn[0] * self.bn[2] / np.sqrt(self.bn[1] + 1e-10)
             #print bn_scale, bn_bias
             # search the best quantization for scale and bias
             self.bn_scale_dq = int(math.floor(math.log(1.0/np.max(np.abs(bn_scale))) / math.log(2.0))) + 15
             self.bn_bias_dq = int(math.floor(math.log(1.0/np.max(np.abs(bn_bias))) / math.log(2.0))) + 15
-            print 'Layer {}:\tSCALE_Q:{}, BIAS_Q:{}, SCALE_MAX:{}, BIAS:{}'\
-                .format(self.layer_name, self.bn_scale_dq, self.bn_bias_dq, np.max(np.abs(bn_scale)), np.max(np.abs(bn_bias)))
+            print('Layer {}:\tSCALE_Q:{}, BIAS_Q:{}, SCALE_MAX:{}, BIAS:{}'\
+                .format(self.layer_name, self.bn_scale_dq, self.bn_bias_dq, np.max(np.abs(bn_scale)), np.max(np.abs(bn_bias))))
             #normalize the bias Q to scale Q, in order to have a uniformed Q
             bn_bias = bn_bias * (2 ** self.bn_bias_dq) / (2 ** self.bn_scale_dq)
             bn_array = np.concatenate([bn_scale.reshape(-1, 1), bn_bias.reshape(-1, 1)], axis = 1)\

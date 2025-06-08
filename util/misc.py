@@ -2,7 +2,8 @@
 
 import os
 from settings import *
-import ConfigParser
+#import ConfigParser
+import configparser as ConfigParser
 
 def get_operator_name(operator_type, channel_parall_factor):
     if operator_type == 'vector_muladd':
@@ -72,7 +73,7 @@ def get_layer_cpf(layer_name, optim_file=None):
     try:
         cpf = int(cf.get(layer_name, 'CPF'))
     except:
-        print 'Layer %s:CPF is not provide in optimation configure file, will use default value 1 instead.'%layer_name
+        print('Layer %s:CPF is not provide in optimation configure file, will use default value 1 instead.'%layer_name)
         cpf = 1
     return cpf
 
@@ -84,7 +85,7 @@ def get_layer_kpf(layer_name, optim_file=None):
     try:
         kpf = int(cf.get(layer_name, 'KPF'))
     except:
-        print 'Layer %s:KPF is not provide in optimation configure file, will use default value 1 instead.'%layer_name
+        print('Layer %s:KPF is not provide in optimation configure file, will use default value 1 instead.'%layer_name)
         kpf = 1
     return kpf
 
@@ -98,7 +99,7 @@ def get_layer_dma_delay(layer_name, optim_file=None):
         if dma_delay > MAX_DDR_DMA_DELAY:
             raise Exception ('Layer %s:DMA_DELAY is too large, can not excced %d.'%(layer_name, MAX_DDR_DMA_DELAY))
     except:
-        print 'Layer %s:DMA_DELAY is not provide in optimation configure file, will use default value 0 instead.'%layer_name
+        print('Layer %s:DMA_DELAY is not provide in optimation configure file, will use default value 0 instead.'%layer_name)
         dma_delay = 0
     return dma_delay
 

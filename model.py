@@ -13,7 +13,8 @@ from util.math2 import lcm
 from util.resource import get_dsps_resource, get_brams_resource, get_ddr_bandwidth
 from web.pack import pack_layer_profile, pack_model_profile, pack_optim_info
 from settings import *
-import ConfigParser
+#import ConfigParser
+import configparser as ConfigParser
 from caffe.proto import caffe_pb2
 from google.protobuf import text_format
 import math
@@ -59,7 +60,7 @@ class Model(caffe.Net):
             layer_cur = self.layers[layer_list.index(layer_name)]
             layer_type = layer_cur.type
             if layer_type == 'Softmax' or layer_type == 'Dropout' or layer_type == 'Input':
-                print '{} layer will be skipped.'.format(layer_type)
+                print('{} layer will be skipped.'.format(layer_type))
                 continue
             # get the layer information
             layer_info = self.get_layer_info(layer_name)
@@ -113,20 +114,20 @@ class Model(caffe.Net):
                 params = [self.params[layer_name][0].data / self.params[layer_name][2].data, \
                           self.params[layer_name][1].data / self.params[layer_name][2].data]
                 self.modules[-1].bn = params
-                print 'Layer %s(%s), is aggregated to the upper layer %s.'\
-                      %(layer_name, layer_type, self.modules[-1].layer_name)
+                print('Layer %s(%s), is aggregated to the upper layer %s.'\
+                      %(layer_name, layer_type, self.modules[-1].layer_name))
                 continue
             elif layer_type == 'Scale':
                 params = [self.params[layer_name][0].data, self.params[layer_name][1].data]
                 self.modules[-1].bn.extend(params)
-                print 'Layer %s(%s), is aggregated to the upper layer %s.'\
-                      %(layer_name, layer_type, self.modules[-1].layer_name)
+                print('Layer %s(%s), is aggregated to the upper layer %s.'\
+                      %(layer_name, layer_type, self.modules[-1].layer_name))
                 continue
             elif layer_type == 'ReLU':
                 # appregate this simple layer to the up layer
                 self.modules[-1].hasrelu = 1
-                print 'Layer %s(%s), is aggregated to the upper layer %s.'\
-                      %(layer_name, layer_type, self.modules[-1].layer_name)
+                print('Layer %s(%s), is aggregated to the upper layer %s.'\
+                      %(layer_name, layer_type, self.modules[-1].layer_name))
                 continue
             else:
                 raise Exception('Layer type [%s] is not supported.'%layer_type)
@@ -254,12 +255,12 @@ class Model(caffe.Net):
                                  .format(self.modules[idx-1].layer_name, self.modules[idx].layer_name))
  
     def module_summary(self):
-        print '\nNeural network structure overview.'
+        print('\nNeural network structure overview.')
         format_str = "%-10s%-16s%-16s%-16s%-15s%-8s%-8s%-8s%-8s%-6s%-6s%-7s%-8s%-7s"
-        print (format_str%('NAME', 'TYPE', 'INPUT_SHAPE', 'OUTPUT_SHAPE', 'KERNEL_SHAPE', 'KN',
+        print(format_str%('NAME', 'TYPE', 'INPUT_SHAPE', 'OUTPUT_SHAPE', 'KERNEL_SHAPE', 'KN',
                'STRIDE', 'PAD', 'GROUP', 'CPF', 'KPF', 'DIN', 'WEIGHT', 'DOUT'))
-        print '-------------------------------------------------------------------------------------------' + \
-              '---------------------------------------------'
+        print('-------------------------------------------------------------------------------------------' + \
+              '---------------------------------------------')
         
         for module_inst in self.modules:
             if hasattr(module_inst, 'kernel_shape'):
@@ -276,22 +277,22 @@ class Model(caffe.Net):
                 kernel_num = module_inst.kernel_num
             else:
                 module_inst.kernel_num = 0
-            print (format_str%(module_inst.layer_name, module_inst.layer_type, str(module_inst.input_shape), 
+            print(format_str%(module_inst.layer_name, module_inst.layer_type, str(module_inst.input_shape), 
                    str(module_inst.output_shape), str(kernel_shape), str(kernel_num), 
                    str(module_inst.stride), str(module_inst.pad),
                    str(module_inst.group) if hasattr(module_inst, 'group') else '', str(cpf),
                    str(module_inst.kpf), str(module_inst.input_dw)+'/'+str(module_inst.input_dq),
                    str(module_inst.param_ww)+'/'+str(module_inst.param_wq), 
                    str(module_inst.output_dw)+'/'+str(module_inst.output_dq)))
-        print '\n'
+        print('\n')
 
     def memory_summary(self, res_file=None):
-        print '\nFPGA on-chip memory usage (Single batch).'
+        print('\nFPGA on-chip memory usage (Single batch).')
         format_str = "%-13s%-15s%-15s%-13s%-13s%-13s%-13s%-13s%-13s"
-        print (format_str%('NAME', 'TYPE', 'SIZE(bits)', 'BRAM18E',
+        print(format_str%('NAME', 'TYPE', 'SIZE(bits)', 'BRAM18E',
                'WR_WIDTH', 'WR_DEPTH', 'RD_WIDTH', 'RD_DEPTH', 'UTILIZATION'))
-        print '-----------------------------------------------------------------------------------' + \
-              '-------------------------------------'
+        print('-----------------------------------------------------------------------------------' + \
+              '-------------------------------------')
         self.rm_blk_size = 0
         self.rm_dist_size = 0
         self.rm_blks = 0
@@ -307,35 +308,35 @@ class Model(caffe.Net):
             if module_inst.params:
                 self.wm_size += module_inst.wm_size + module_inst.bm_size
                 self.wm_blks += module_inst.wm_blks + module_inst.bm_blks
-            print (format_str%(module_inst.layer_name, 'reshape' if module_inst.rm_type == 'blk' else 'reshape*', 
+            print(format_str%(module_inst.layer_name, 'reshape' if module_inst.rm_type == 'blk' else 'reshape*', 
                    str(module_inst.rm_size), str(module_inst.rm_blks), str(module_inst.rm_wr_width), str(module_inst.rm_wr_depth),
                    str(module_inst.rm_rd_width), str(module_inst.rm_rd_depth), 
                    '%.3f'%(float(module_inst.rm_size)/float(module_inst.rm_blks*18000.0) if module_inst.rm_type=='blk' else 0)))
             if module_inst.params:
-                print (format_str%(' ', 'weights{}'.format('(+)' if module_inst.wm_hier_enable is False else ''), 
+                print(format_str%(' ', 'weights{}'.format('(+)' if module_inst.wm_hier_enable is False else ''), 
                        str(module_inst.wm_size), str(module_inst.wm_blks),
                        str(module_inst.wm_wr_width), str(module_inst.wm_wr_depth), str(module_inst.wm_rd_width), 
                        str(module_inst.wm_rd_depth),  '%.3f'%(float(module_inst.wm_size)/float(module_inst.wm_blks*18000.0))))
-                print (format_str%(' ', 'bias', str(module_inst.bm_size), str(module_inst.bm_blks), ' ', ' ', str(module_inst.bm_rd_width), 
+                print(format_str%(' ', 'bias', str(module_inst.bm_size), str(module_inst.bm_blks), ' ', ' ', str(module_inst.bm_rd_width), 
                        str(module_inst.bm_rd_depth), '%.3f'%(float(module_inst.bm_size)/float(module_inst.bm_blks*18000.0))))
 
         total_blks = self.rm_blks * self.batch_size + self.wm_blks
-        print '\nWeight memory is %.3fMb(%d BRAM18Es).'%(self.wm_size/1000000.0, self.wm_blks)
-        print 'Reshape memory of each channel, BRAM memory is %.3fMb(%d BRAM18Es), distributed memory is %.3fMb.'\
-              %(self.rm_blk_size/1000000.0, self.rm_blks, self.rm_dist_size/1000000.0)
-        print 'Total memory used is %.3fMb, where BRAM is %.3fMb(%d BRAM18Es, %.1f%%), distributed memory is %.3fMb.'\
+        print('\nWeight memory is %.3fMb(%d BRAM18Es).'%(self.wm_size/1000000.0, self.wm_blks))
+        print('Reshape memory of each channel, BRAM memory is %.3fMb(%d BRAM18Es), distributed memory is %.3fMb.'\
+              %(self.rm_blk_size/1000000.0, self.rm_blks, self.rm_dist_size/1000000.0))
+        print('Total memory used is %.3fMb, where BRAM is %.3fMb(%d BRAM18Es, %.1f%%), distributed memory is %.3fMb.'\
               %((self.rm_blk_size * self.batch_size + self.rm_dist_size * self.batch_size+ self.wm_size)/1000000.0,
                (self.rm_blk_size * self.batch_size + self.wm_size) / 1000000.0, total_blks, 
-               float(total_blks)/float(get_brams_resource(res_file))*100.0, self.rm_dist_size * self.batch_size)
-        print 'The averaged utilization of BRAM is %.3f.'%(float(self.rm_blk_size * self.batch_size + self.wm_size) \
-              /float(total_blks)/18000.0)
+               float(total_blks)/float(get_brams_resource(res_file))*100.0, self.rm_dist_size * self.batch_size))
+        print('The averaged utilization of BRAM is %.3f.'%(float(self.rm_blk_size * self.batch_size + self.wm_size) \
+              /float(total_blks)/18000.0))
 
         if total_blks > get_brams_resource(res_file):
             raise Exception ('The BRAM18E used is %d, exceeds the total available %d BRAM16Es.'\
                              %(total_blks, get_brams_resource(res_file)))
         if total_blks > get_brams_resource(res_file) * RESOURCE_WARNING_THRES:
-            print 'WARNING: The BRAM18E used is %d, excees %.1f%% of the total available %d BRAM16Es'\
-                  %(total_blks, RESOURCE_WARNING_THRES*100, get_brams_resource(res_file))
+            print('WARNING: The BRAM18E used is %d, excees %.1f%% of the total available %d BRAM16Es'\
+                  %(total_blks, RESOURCE_WARNING_THRES*100, get_brams_resource(res_file)))
         self.total_blks = total_blks
 
     def profile(self, res_file=None):
@@ -356,21 +357,21 @@ class Model(caffe.Net):
             raise Exception ('The DSPs used is %d, exceeds the total available %d DSPs.'\
                              %(total_dsps, get_dsps_resource(res_file)))
         if total_dsps > get_dsps_resource(res_file) * RESOURCE_WARNING_THRES:
-            print '\nWARNING: The DSPs used is %d, exceeds %.1f%% of the total available %d DSPs'\
-                  %(total_dsps, RESOURCE_WARNING_THRES*100, get_dsps_resource(res_file))
+            print('\nWARNING: The DSPs used is %d, exceeds %.1f%% of the total available %d DSPs'\
+                  %(total_dsps, RESOURCE_WARNING_THRES*100, get_dsps_resource(res_file)))
      
-        print '\nFPGA implementation summary (projected in %dMHz clock, batch_size=%d).'%(CLOCK_FREQUENCY, self.batch_size)
+        print('\nFPGA implementation summary (projected in %dMHz clock, batch_size=%d).'%(CLOCK_FREQUENCY, self.batch_size))
         format_str = "%-12s%-15s%-8s%-8s%-16s%-16s%-12s%-13s%-15s%-20s"
-        print (format_str%('NAME', 'TYPE', 'CPF',
-               'KPF', 'MACS', 'DSPs', 'WEIGHTS', 'CLOCKS', 'DELAY(us)', 'DDR_BW(Mb/s)'))
-        print '-----------------------------------------------------------------------------------------' + \
-              '--------------------------------------'
+        print((format_str%('NAME', 'TYPE', 'CPF',
+               'KPF', 'MACS', 'DSPs', 'WEIGHTS', 'CLOCKS', 'DELAY(us)', 'DDR_BW(Mb/s)')))
+        print('-----------------------------------------------------------------------------------------' + \
+              '--------------------------------------')
 
         total_ddr_bandwidth = 0
         layer_profile = []
         optim_info = []
         for module_inst in self.modules:
-            print (format_str%(module_inst.layer_name, module_inst.layer_type, 
+            print(format_str%(module_inst.layer_name, module_inst.layer_type, 
                    str(module_inst.cpf) if hasattr(module_inst, 'cpf') else '', str(module_inst.kpf), 
                    str(module_inst.macs), str(module_inst.dsps), str(module_inst.weights_num), str(module_inst.clocks),
                    '%.3f'%(module_inst.clocks/CLOCK_FREQUENCY),
@@ -386,15 +387,15 @@ class Model(caffe.Net):
                                     module_inst.cpf if hasattr(module_inst, 'cpf') else None, module_inst.kpf))
             total_ddr_bandwidth += module_inst.ddr_bandwidth * CLOCK_FREQUENCY * module_inst.clocks / max_clocks
   
-        print '----------------------'
-        print (format_str%('total', ' ', ' ', ' ', str(total_macs), 
+        print('----------------------')
+        print(format_str%('total', ' ', ' ', ' ', str(total_macs), 
                str(total_dsps) + '(%.1f%%)'%(float(total_dsps)/get_dsps_resource(res_file)*100.0), 
                str(total_weights_num), str(total_clocks), 
                '%.3f'%(total_clocks/CLOCK_FREQUENCY), '%.2f'%(total_ddr_bandwidth)))
-        print '\nTotal %d DMA channels used, %d left.'%(self.used_dma_channel_num, \
-               DDR_DMA_ENGINE_NUM-self.used_dma_channel_num)
-        print 'The projected throughput is %.1fimages/s, utilization is about %.4f.'\
-              %(1e6/max_delay * self.batch_size, float(total_macs)/(total_multiplier*CLOCK_FREQUENCY*max_delay))
+        print('\nTotal %d DMA channels used, %d left.'%(self.used_dma_channel_num, \
+               DDR_DMA_ENGINE_NUM-self.used_dma_channel_num))
+        print('The projected throughput is %.1fimages/s, utilization is about %.4f.'\
+              %(1e6/max_delay * self.batch_size, float(total_macs)/(total_multiplier*CLOCK_FREQUENCY*max_delay)))
 
         if WEBSERVICE is True:
             model_profile = pack_model_profile(layer_profile, self.batch_size, total_macs, total_dsps, \

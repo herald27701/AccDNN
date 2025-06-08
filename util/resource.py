@@ -3,7 +3,8 @@
 import math
 from settings import *
 import chip_define
-import ConfigParser
+#import ConfigParser
+import configparser as ConfigParser
 
 width_list = [1, 2, 4, 9, 18, 36]
 depth_list = [16392, 8192, 4096, 2048, 1024, 512]
@@ -75,8 +76,8 @@ def get_ddr_bandwidth(res_file=None):
 
 if __name__ == '__main__':
     
-    print '16, 8064, 64, 2016 :', get_brams(16, 8064, 64, 2016)
-    print '512, 49, 512, 49 :', get_brams(512, 49, 512, 49)
-    print '256, 3312, 256, 3312 :', get_brams(256, 3312, 256, 3312)
-    print '256, 2310, 128,  4620:', get_brams(256, 2310, 128, 4620)
-    print '512, 600, 1024, 300 :', get_brams(512, 600, 1024, 300)
+    print('16, 8064, 64, 2016 :', get_brams(16, 8064, 64, 2016))
+    print('512, 49, 512, 49 :', get_brams(512, 49, 512, 49))
+    print('256, 3312, 256, 3312 :', get_brams(256, 3312, 256, 3312))
+    print('256, 2310, 128,  4620:', get_brams(256, 2310, 128, 4620))
+    print('512, 600, 1024, 300 :', get_brams(512, 600, 1024, 300))

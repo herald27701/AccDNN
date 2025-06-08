@@ -34,22 +34,22 @@ def get_clock_config (timing_file, output_file):
 
     mfile.close()
     if (not clk_acc_line) :
-        print "Can not find available timing information from file %s" % timing_file
+        print("Can not find available timing information from file %s" % timing_file)
         return False
 
     WNS = None
     TNS = None
     if (clk_acc_line):
-        print clk_acc_line
+        print(clk_acc_line)
         clock_data = clk_acc_line.split()
         if len(clock_data) > 10:
             WNS = float(clock_data[1])
             TNS = float(clock_data[2])
         else:
-            print "Can not find available timing information from file %s" % timing_file
+            print("Can not find available timing information from file %s" % timing_file)
             return False
 
-    print "WNS:%f; TNS:%f" % (WNS, TNS)
+    print("WNS:%f; TNS:%f" % (WNS, TNS))
     period = 5.0-WNS
     freqency = 1000.0/period
 
@@ -65,11 +65,11 @@ def get_clock_config (timing_file, output_file):
             pll_negedge_cnt = config [4]
             break
 
-    print "PIE works at frequency %fHz. Clock config is (%d,%d)" % (final_freqency, pll_posedge_cnt, pll_negedge_cnt)
+    print("PIE works at frequency %fHz. Clock config is (%d,%d)" % (final_freqency, pll_posedge_cnt, pll_negedge_cnt))
     mfile = open(output_file, 'w')
     mfile.write("%d,%d,1024" % (pll_posedge_cnt, pll_negedge_cnt))
     mfile.close()
-    print "PIE run-time config file is saved to %s" % output_file
+    print("PIE run-time config file is saved to %s" % output_file)
     return True
 
 if __name__ == '__main__':
