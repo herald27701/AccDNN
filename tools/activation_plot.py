@@ -14,7 +14,7 @@ def compare(real_file):
     for line in fp:
         data_list.append(float(line.strip()))
     real_array = np.array(data_list)
-    print real_array
+    print(real_array)
 
     plt.figure(1)
     plot2 = plt.plot(np.arange(len(real_array)), real_array, 'b')

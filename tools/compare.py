@@ -13,7 +13,7 @@ NUM_MAX = 2 ** (bits_per_element)
 NUM_MAX_HALF = 2 ** (bits_per_element - 1)
 
 def compare(sim_file, real_file, bits_per_element, height, stride=1, iteration=1):
-    print bits_per_element
+    print(bits_per_element)
     hex_num_per_element = bits_per_element / 4
     NUM_MAX = 2 ** (bits_per_element)
     NUM_MAX_HALF = 2 ** (bits_per_element - 1)    
@@ -36,7 +36,7 @@ def compare(sim_file, real_file, bits_per_element, height, stride=1, iteration=1
         lines_per_iteration = len_array / elements_per_line
     else:
         lines_per_iteration = len_array / elements_per_line + 1
-    print 'lines_per_iteration:', lines_per_iteration
+    print('lines_per_iteration:', lines_per_iteration)
     if len(line_list) < (iteration-1)*lines_per_iteration:
         raise Exception('Not enough data generated...')
     if len(line_list) < iteration*lines_per_iteration:
@@ -64,13 +64,13 @@ def compare(sim_file, real_file, bits_per_element, height, stride=1, iteration=1
     sim_array = np.array(data_list, dtype='float32')
     sim_array[np.where(sim_array >= NUM_MAX_HALF)] = sim_array[np.where(sim_array >= NUM_MAX_HALF)] - NUM_MAX
     
-    print sim_array
-    print real_array
+    print(sim_array)
+    print(real_array)
 
     if len(sim_array) == len(real_array):
         diff = sim_array - real_array
         error = np.sqrt((diff**2).sum() / ((real_array**2).sum()))
-        print 'Quantization error is %f'%(error)
+        print('Quantization error is %f'%(error))
 
     plt.figure(1)
     #plot1 = plt.plot(np.arange(len(sim_array)), diff, 'r')

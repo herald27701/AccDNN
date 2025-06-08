@@ -127,18 +127,18 @@ if __name__ == '__main__':
     weight_file = 'example/cifar10/cifar10_quick_iter_5000.caffemodel'
     # weight_file = '../models/alexnet-quantized/alexnet_A16C8F4_iter_2000.caffemodel'
     ret = check_prototxt(model_file)
-    print ret
+    print(ret)
     ret = check_weights(model_file, weight_file)
-    print ret
+    print(ret)
     acc_settings_json = json.dumps({'resource':{'dsp_num':270, 'ram18e_num':327, 'ddr_bandwidth':80000}, \
                                     'fpga_type':'xcku115-flva1517-2-e', \
                                     'ddr_data_width':256})
     ret = accdnn_profile(model_file, acc_settings_json)
-    print ret
+    print(ret)
     ret = accdnn_optimze(model_file, acc_settings_json, json.dumps(json.loads(ret).get('parameter')))
-    print ret
+    print(ret)
     ret = accdnn_codegen(model_file, weight_file, acc_settings_json, json.dumps(json.loads(ret).get('parameter')))
-    print ret
+    print(ret)
 
    
 

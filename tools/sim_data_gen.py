@@ -74,7 +74,7 @@ def sim_data_gen(model_file, pretrained_model, imagepath, batch_size, iteration)
             raise Exception ("Blob data dimension is not know.")
         module_inst = model_inst.get_inst_by_layer_name(k)
         if module_inst is None:
-            print '{} layer is not found.'.format(k)
+            print('{} layer is not found.'.format(k))
             # file_path_name = DUMP_BLOB_DATA_PATH + '/' + k + '.dat'
             # mat_dump_float(file_path_name, blob_data, 8,  1)
             continue

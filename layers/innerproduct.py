@@ -7,13 +7,13 @@ class InnerProduct(Convolution):
         kernel_shape = tuple([params[0].shape[1], 1, 1])
         #reshape the matrix from 2-dim to 4-dim
         weights_shape = tuple([kernel_num, kernel_shape[0], kernel_shape[1], kernel_shape[2]])
-        print "Layer %s: Weights will be reshaped from %s to %s."%(layer_name, params[0].shape, weights_shape);
+        print("Layer %s: Weights will be reshaped from %s to %s."%(layer_name, params[0].shape, weights_shape))
         params[0] =  params[0].reshape(weights_shape)
 
         if input_shape[0] != kernel_shape[0]:
             input_shape_old = input_shape
             input_shape_new = tuple([input_shape[0] * input_shape[1] * input_shape[2], 1, 1])
-            print "Layer %s: Input data will be reshaped from %s to %s."%(layer_name, input_shape, input_shape_new)
+            print("Layer %s: Input data will be reshaped from %s to %s."%(layer_name, input_shape, input_shape_new))
             input_shape = input_shape_new
             #weights will do the permutation.
             params[0] = params[0].reshape(kernel_num, input_shape_old[0], input_shape_old[1], input_shape_old[2]) \

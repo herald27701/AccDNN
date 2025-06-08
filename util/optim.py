@@ -44,5 +44,5 @@ def optim_cpf_kpf(cpf, kpf, max_kpf):
 
 if __name__ == '__main__':
 
-    print optim_cpf_kpf(16, 2, 16)
+    print(optim_cpf_kpf(16, 2, 16))
 
