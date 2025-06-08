@@ -22,13 +22,16 @@ In this project, we proposed a novel solution that can automatically convert the
 3. The total number of convolutional and fully connected layers in the network defined in Caffe .prototxt should be less than 15 layers
 
 ## Requirements:
-1. Install conda environment via [Anaconda](https://www.anaconda.com/download/success) or [Miniconda](https://www.anaconda.com/download/success).
+1. Install caffe.
+### Option 1: Install with conda
+Download and install caffe environment with [Anaconda](https://www.anaconda.com/download/success) or [Miniconda](https://www.anaconda.com/download/success).
 ```
 conda env create -f environment_caffe-python3.yml #Python 3
 conda env create -f environment_caffe-python2.yml #Python 2
 ```
 
-Optional: To make sure you can use the quantized caffe model, please install [ristretto Caffe](https://github.com/pmgysel/caffe) instead of BVLC caffe following the instructions [here](http://caffe.berkeleyvision.org/installation.html), tested on rc3, and also the Python caffe by runing the `Make pycaffe` and `pip install -r requirements.txt` in caffe/python. Make sure that you have compiled the Python Caffe interface and that it is on your `PYTHONPATH`. Please also set the ACCDNN_ROOT.
+### Option 2: Build caffe from source
+To make sure you can use the quantized caffe model, please install [ristretto Caffe](https://github.com/pmgysel/caffe) instead of BVLC caffe following the instructions [here](http://caffe.berkeleyvision.org/installation.html), tested on rc3, and also the Python caffe by runing the `Make pycaffe` and `pip install -r requirements.txt` in caffe/python. Make sure that you have compiled the Python Caffe interface and that it is on your `PYTHONPATH`. Please also set the ACCDNN_ROOT.
 ```
     export PYTHONPATH=path/to/caffe/python
     export ACCDNN_ROOT=path/to/AccDNN
