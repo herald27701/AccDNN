@@ -24,8 +24,8 @@ In this project, we proposed a novel solution that can automatically convert the
 ## Requirements:
 1. Install environment via conda.
 ```
-conda env create -f environment_caffe.yml #Python3
-conda env create -f environment_caffe-python2.yml #Python2 if you want to run examples
+conda env create -f environment_caffe-python3.yml #Python 3
+conda env create -f environment_caffe-python2.yml #Python 2
 ```
 
 Optional: To make sure you can use the quantized caffe model, please install [ristretto Caffe](https://github.com/pmgysel/caffe) instead of BVLC caffe following the instructions [here](http://caffe.berkeleyvision.org/installation.html), tested on rc3, and also the Python caffe by runing the `Make pycaffe` and `pip install -r requirements.txt` in caffe/python. Make sure that you have compiled the Python Caffe interface and that it is on your `PYTHONPATH`. Please also set the ACCDNN_ROOT.
