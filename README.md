@@ -22,7 +22,7 @@ In this project, we proposed a novel solution that can automatically convert the
 3. The total number of convolutional and fully connected layers in the network defined in Caffe .prototxt should be less than 15 layers
 
 ## Requirements:
-1. Install environment via conda.
+1. Install conda environment via [Anaconda](https://www.anaconda.com/download/success) or [Miniconda](https://www.anaconda.com/download/success).
 ```
 conda env create -f environment_caffe-python3.yml #Python 3
 conda env create -f environment_caffe-python2.yml #Python 2
